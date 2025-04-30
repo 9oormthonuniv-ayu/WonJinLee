@@ -1,52 +1,87 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Save</title>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
+    <title>회원가입</title>
+    <style>
+        body {
+            text-align: center;
+            margin-top: 50px;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            margin-bottom: 30px;
+        }
+        form {
+            display: inline-block;
+            text-align: left;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="tel"] {
+            width: 250px;
+            padding: 5px;
+            font-size: 14px;
+        }
+        .btn-submit {
+            margin-top: 20px;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-submit:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
+
 <body>
-<!-- action속성: form에 작성한 데이터를 어디로 보낼지 지점 -->
-<form action="/member/save" method="post">
-<!--    name속성: 서버로 전송할때 변수의 이름의 역할-->
-    이메일:<input name="memberEmail" type="email" id="memberEmail" onblur="emailCheck()"><br>
-    <span id="check-result"></span><br>
-    비밀번호:<input name="memberPassword" type="password"><br>
-    이름:<input name="memberName" type="text">
-    <input type="submit" value="회원가입">
+
+<h1>회원가입</h1>
+
+<form th:action="@{${actionUrl}}" method="post" th:object="${user}">
+
+    <div class="form-group">
+        <label for="userPassword">Password:</label>
+        <input type="password" id="userPassword" name="userPassword" required>
+    </div>
+
+    <div class="form-group">
+        <label for="userEmail">이메일:</label>
+        <input type="email" id="userEmail" name="userEmail" required>
+    </div>
+
+    <div class="form-group">
+        <label for="userName">이름:</label>
+        <input type="text" id="userName" name="userName">
+    </div>
+    <div class="form-group">
+        <label for="userPhoneNum">전화번호:</label>
+        <input type="tel" id="userPhoneNum" name="userPhoneNum">
+    </div>
+    <button type="submit"
+            th:text="${isAdmin} ? '관리자 가입' : '회원 가입'"
+            th:style="${isAdmin} ? 'background-color: blue; color: white;' : ''">
+        회원 가입
+    </button>
 </form>
+
 </body>
-
-<script th:inline="javascript">
-    const emailCheck =() =>{
-        const email = document.getElementById("memberEmail").value;
-        const checkResult = document.getElementById("check-result");
-        console.log(email);
-          $.ajax({
-            type: "post",
-            url: "/member/email-check",
-            data: {
-                "memberEmail": email
-            },
-            success: function (res) {
-                console.log("성공: " + res);
-                if (res === "ok") {
-                    checkResult.innerHTML = "사용 가능한 이메일입니다.";
-                    checkResult.style.color="green";
-                } else {
-                    checkResult.innerHTML = "이미 사용 중인 이메일입니다.";
-                    checkResult.style.color="red";
-                }
-            },
-            error: function (err)
-            {
-                console.log("에러 상태코드:", err.status);
-                console.log("에러 내용:", err.responseText);
-            }
-        });
-    }
-</script>
-
 </html>

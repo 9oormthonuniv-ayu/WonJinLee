@@ -1,14 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>도서관리 시스템</title>
+    <style>
+        body {
+            text-align: center;
+            margin-top: 100px;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            margin-bottom: 50px;
+        }
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+        .btn-container a {
+            display: inline-block;
+            width: 200px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .btn-container a:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
-<h2>Hello Spring Boot!!</h2>
-<a href="/member/save">회원가입</a>
-<a href="/member/login">로그인</a>
-<a href="/member/">회원 목록</a>
+
+<h1>도서관리 시스템</h1>
+
+<div class="btn-container">
+    <a th:href="@{/user/save}">회원가입</a>
+    <a th:href="@{/user/login}">로그인</a>
+    <a th:href="@{/book}">책 목록</a>
+</div>
+
 </body>
 </html>

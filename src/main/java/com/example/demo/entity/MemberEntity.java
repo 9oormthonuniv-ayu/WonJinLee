@@ -22,7 +22,8 @@ public class MemberEntity {
 
     @Column
     private  String memberName;
-
+    
+    //빌더 패턴 해보기
     //엔티티 객체를 객체로 만들어서 호출하는 것이 아니라 정적 메소드로 사용하는 방식
     public static MemberEntity toMemberEntity(MemberDTO memberDTO){
         MemberEntity memberEntity = new MemberEntity();

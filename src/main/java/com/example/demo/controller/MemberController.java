@@ -19,6 +19,7 @@ public class MemberController {
     public String saveForm() {
         return "save";
     }
+
     @PostMapping("/member/save")
     //html -> 컨트롤러 -> 서비스->레포지토리->데이터베이스
     /* 하나 씩 값을 파라미터로 전달 받아 사용
