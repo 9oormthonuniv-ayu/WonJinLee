@@ -19,7 +19,7 @@ public class UserDTO {
     private String userPhoneNum;
     private LocalDateTime userCreated;
     private boolean isAdmin;
-
+    
     //엔티티를 DTO로 변경
     public static UserDTO toUserDTO(UserEntity userEntity){
         UserDTO userDTO= new UserDTO();
@@ -32,4 +32,6 @@ public class UserDTO {
         userDTO.setAdmin(userEntity.isAdmin());
         return userDTO;
     }
+
+
 }

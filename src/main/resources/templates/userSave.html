@@ -59,13 +59,13 @@
 <form th:action="@{${actionUrl}}" method="post" th:object="${user}">
 
     <div class="form-group">
-        <label for="userPassword">Password:</label>
-        <input type="password" id="userPassword" name="userPassword" required>
+        <label for="userEmail">이메일:</label>
+        <input type="email" id="userEmail" name="userEmail" required>
     </div>
 
     <div class="form-group">
-        <label for="userEmail">이메일:</label>
-        <input type="email" id="userEmail" name="userEmail" required>
+        <label for="userPassword">Password:</label>
+        <input type="password" id="userPassword" name="userPassword" required>
     </div>
 
     <div class="form-group">

@@ -21,22 +21,38 @@ public class BookEntity {
     private String bookIsbn;
 
     @Column
-    private String bookStock;
+    private Integer bookOriginalStock;
+
+    @Column
+    private Integer bookCurrentStock;
 
     @Column
     private String bookPublisher;
 
     @Column
-    private String bookOublished_at;
+    private String bookPublished_at;
 
     public static BookEntity toBookEntity(BookDTO bookDTO) {
         BookEntity bookEntity = new BookEntity();
         bookEntity.setBookId(bookDTO.getBookId());
         bookEntity.setBookTitle(bookDTO.getBookTitle());
         bookEntity.setBookIsbn(bookDTO.getBookIsbn());
-        bookEntity.setBookStock(bookDTO.getBookStock());
+        bookEntity.setBookOriginalStock(bookDTO.getBookOriginalStock());
+        bookEntity.setBookCurrentStock(bookDTO.getBookCurrentStock());
         bookEntity.setBookPublisher(bookDTO.getBookPublisher());
-        bookEntity.setBookOublished_at(bookDTO.getBookOublished_at());
+        bookEntity.setBookPublished_at(bookDTO.getBookPublished_at());
         return bookEntity;
     }
+    public static BookEntity toUpdateBookEntity(BookDTO bookDTO) {
+        BookEntity bookEntity = new BookEntity();
+        bookEntity.setBookId(bookDTO.getBookId());
+        bookEntity.setBookTitle(bookDTO.getBookTitle());
+        bookEntity.setBookIsbn(bookDTO.getBookIsbn());
+        bookEntity.setBookOriginalStock(bookDTO.getBookOriginalStock());
+        bookEntity.setBookCurrentStock(bookDTO.getBookCurrentStock());
+        bookEntity.setBookPublisher(bookDTO.getBookPublisher());
+        bookEntity.setBookPublished_at(bookDTO.getBookPublished_at());
+        return bookEntity;
+    }
+
 }

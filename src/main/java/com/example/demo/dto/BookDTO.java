@@ -17,18 +17,20 @@ public class BookDTO {
     private Long bookId;
     private String bookTitle;
     private String bookIsbn;
-    private String bookStock;
+    private Integer bookOriginalStock;
+    private Integer bookCurrentStock;
     private String bookPublisher;
-    private String bookOublished_at;
+    private String bookPublished_at;
 
     public static BookDTO toBookDTO(BookEntity bookEntity) {
         BookDTO bookDTO = new BookDTO();
         bookDTO.setBookId(bookEntity.getBookId());
         bookDTO.setBookTitle(bookEntity.getBookTitle());
         bookDTO.setBookIsbn(bookEntity.getBookIsbn());
-        bookDTO.setBookStock(bookEntity.getBookStock());
+        bookDTO.setBookOriginalStock(bookEntity.getBookOriginalStock());
+        bookDTO.setBookCurrentStock(bookEntity.getBookCurrentStock());
         bookDTO.setBookPublisher(bookEntity.getBookPublisher());
-        bookDTO.setBookOublished_at(bookEntity.getBookOublished_at());
+        bookDTO.setBookPublished_at(bookEntity.getBookPublished_at());
         return bookDTO;
     }
 }
