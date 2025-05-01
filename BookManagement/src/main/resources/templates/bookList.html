@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>책 목록</title>
+  <style>
+    table {
+        width: 80%;
+        margin: 30px auto;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 12px;
+        border: 1px solid #ddd;
+        text-align: center;
+    }
+    th {
+        background-color: #f4f4f4;
+    }
+    h2 {
+        text-align: center;
+        margin-top: 30px;
+    }
+    .rent-btn {
+        padding: 5px 10px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .rent-btn:hover {
+        background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+<h2>📚 책 목록</h2>
+<table>
+  <thead>
+  <tr>
+    <th>제목</th>
+    <th>국제번호</th>
+    <th>재고</th>
+    <th>출판사</th>
+    <th>저자</th>
+    <th>대여</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="book : ${books}">
+    <td th:text="${book.bookTitle}">제목</td>
+    <td th:text="${book.bookIsbn}">국제번호</td>
+    <td th:text="${book.bookCurrentStock + ' / ' + book.bookOriginalStock}"></td>
+    <td th:text="${book.bookPublished_at}">발행자</td>
+    <td th:text="${book.bookPublisher}">출판사</td>
+    <td>
+      <form th:action="@{'/book/rent/' + ${book.bookId}}" method="post">
+        <button type="submit" class="rent-btn">대여하기</button>
+      </form>
+    </td>
+  </tr>
+  </tbody>
+</table>
+</body>
+</html>
