@@ -5,7 +5,14 @@
     <title>main</title>
 </head>
 <body>
-  session 값 확인: <p th:text="${session.loginEmail}"></p>
+session 값 확인: <p th:text="${session.loginEmail}"></p>
+
 <a href="/book">책 목록</a>
+<br><br>
+
+<!-- ✅ 내 대여 목록 보기 버튼 추가 -->
+<form action="/user/rentals" method="get" style="display:inline;">
+    <button type="submit">📗 내 대여 목록 보기</button>
+</form>
 </body>
 </html>

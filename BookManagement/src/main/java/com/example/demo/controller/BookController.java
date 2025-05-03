@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -59,7 +60,8 @@ public class BookController {
         return "redirect:/admin/book"; // 수정 완료 후 관리자 목록으로 이동
     }
     @PostMapping("/book/rent/{bookId}")
-    public String rentBook(@PathVariable("bookId") Long bookId, HttpSession session) {
+    public String rentBook(@PathVariable("bookId") Long bookId, HttpSession session, RedirectAttributes redirectAttributes) {
+
         UserDTO loginUser = (UserDTO) session.getAttribute("loginEmail");
         if (loginUser == null) {
             return "redirect:/user/login";
@@ -69,5 +71,16 @@ public class BookController {
         return "redirect:/book"; // 대여 후 책 목록으로 이동
     }
 
+    @PostMapping("/book/return/{rentalId}")
+    public String returnBook(@PathVariable Long rentalId, RedirectAttributes redirectAttributes) {
+        try {
+            rentalService.returnBook(rentalId);
+            redirectAttributes.addFlashAttribute("message", "📗 반납 완료되었습니다.");
+        } catch (IllegalStateException e) {
+            redirectAttributes.addFlashAttribute("message", e.getMessage());
+        }
+
+        return "redirect:/user/rentals"; // 나중에 유저 대여 목록으로 바꾸면 더 좋음
+    }
 
 }

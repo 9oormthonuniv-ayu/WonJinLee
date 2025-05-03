@@ -3,6 +3,8 @@ package com.example.demo.controller;
 import com.example.demo.dto.BookDTO;
 import com.example.demo.dto.MemberDTO;
 import com.example.demo.dto.UserDTO;
+import com.example.demo.entity.RentalEntity;
+import com.example.demo.service.RentalService;
 import com.example.demo.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final RentalService rentalService;
 
     @GetMapping("/admin/save")
     public String adminSaveForm(Model model) {
@@ -88,7 +91,15 @@ public class UserController {
         return "redirect:/admin/user";  // 삭제 후 다시 목록으로 리다이렉트
     }
 
+    @GetMapping("/user/rentals")
+    public String myRentals(HttpSession session, Model model) {
+        UserDTO loginUser = (UserDTO) session.getAttribute("loginEmail");
+        Long userId = loginUser.getUserId();
 
+        List<RentalEntity> rentals = rentalService.findRentalsByUserId(userId);
+        model.addAttribute("rentals", rentals);
 
+        return "userRentals";
+    }
 
 }
