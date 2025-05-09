@@ -80,7 +80,7 @@ public class UserController {
     public String userList(Model model){
     List<UserDTO> users = userService.userFindAll();
     model.addAttribute("users", users);
-    return "admin/adminUserList";
+    return "admin/adminUs   erList";
     }
 
     @PostMapping("/admin/user")
