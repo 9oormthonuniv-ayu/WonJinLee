@@ -95,6 +95,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth)->auth
                         .requestMatchers("/login","/","/join").permitAll()// 모든 권한 허용
                         .requestMatchers("/admin").hasAnyRole("ADMIN")//ADMIN이라는 권한을 갖는 사용자만 접근 가능
+                        .requestMatchers("/redis/**").permitAll()
                         .anyRequest().authenticated());//authenticated를 통해 나머지는 로그인한 회원들을 기준으로 사용 가능
         //jwt인증하고 토큰을 발급하는 필터 등록
         http

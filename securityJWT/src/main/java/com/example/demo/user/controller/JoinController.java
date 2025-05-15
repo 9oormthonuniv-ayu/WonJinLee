@@ -1,7 +1,7 @@
-package com.example.demo.controller;
+package com.example.demo.user.controller;
 
-import com.example.demo.dto.JoinDTO;
-import com.example.demo.service.JoinService;
+import com.example.demo.user.dto.JoinDTO;
+import com.example.demo.user.service.JoinService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;

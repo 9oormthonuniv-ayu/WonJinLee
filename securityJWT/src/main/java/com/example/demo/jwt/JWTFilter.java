@@ -1,8 +1,8 @@
 package com.example.demo.jwt;
 
 
-import com.example.demo.dto.CustomUserDetails;
-import com.example.demo.entity.UserEntity;
+import com.example.demo.user.dto.CustomUserDetails;
+import com.example.demo.user.entity.UserEntity;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

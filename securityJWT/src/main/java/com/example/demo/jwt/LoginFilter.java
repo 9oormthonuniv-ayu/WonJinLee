@@ -1,6 +1,6 @@
 package com.example.demo.jwt;
 
-import com.example.demo.dto.CustomUserDetails;
+import com.example.demo.user.dto.CustomUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
