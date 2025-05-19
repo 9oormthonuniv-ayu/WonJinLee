@@ -7,6 +7,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,9 +20,11 @@ import java.io.IOException;
 public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
+    private final RedisTemplate<String, Object> redisTemplate;
 
-    public JWTFilter(JWTUtil jwtUtil){
+    public JWTFilter(JWTUtil jwtUtil, RedisTemplate redisTemplate){
         this.jwtUtil=jwtUtil;
+        this.redisTemplate=redisTemplate;
     }
 
     @Override
@@ -43,10 +46,17 @@ public class JWTFilter extends OncePerRequestFilter {
         //Bearer 부분 제거 후 순수 토큰(뒤에 부분)만 획득 " "로 구분
         String token = authorization.split(" ")[1];
 
+        String blacklistKey = "blacklist:" + token;
+        if (redisTemplate.hasKey(blacklistKey)) {
+            System.out.println("블랙리스트 토큰으로 접근 시도됨");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
         //jwtUtil.isExpired를 통해 토큰 소멸 시간 검증
         if (jwtUtil.isExpired(token)) {
 
-            System.out.println("token expired");
+            System.out.println("token 소멸되었음");
             filterChain.doFilter(request, response);
 
             //조건이 해당되면 메소드 종료 (필수)

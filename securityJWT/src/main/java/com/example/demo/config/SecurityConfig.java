@@ -7,6 +7,7 @@ import com.example.demo.redis.service.RedisService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -30,11 +31,13 @@ public class SecurityConfig {
     //LoginFilter가 인자로 JWTUtile를 받기 때문에 선언
     private JWTUtil jwtUtil;
     private RedisService redisService;
+    private RedisTemplate<String, Object> redisTemplate;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, RedisService redisService) {
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, RedisService redisService, RedisTemplate<String, Object> redisTemplate) {
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtUtil=jwtUtil;
         this.redisService=redisService;
+        this.redisTemplate=redisTemplate;
     }
     //AuthenticationManager Bean 등록
     @Bean
@@ -105,7 +108,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated());//authenticated를 통해 나머지는 로그인한 회원들을 기준으로 사용 가능
         //jwt인증하고 토큰을 발급하는 필터 등록
         http
-                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
+                .addFilterBefore(new JWTFilter(jwtUtil, redisTemplate), LoginFilter.class);
 
 
         //기존의 formLogin가 disable 되지 않았다면 /login을 UsernamePasswordAuthenticationFilter가 가로채서 authenticationManager에게 전달해서 동작한다.

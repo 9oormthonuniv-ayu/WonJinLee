@@ -99,7 +99,26 @@ public class JWTUtil {
                 .claim("role", role)
                 .issuedAt(new Date(System.currentTimeMillis()))// 발행 시간 넣기
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))//만료시간
-                .signWith(secretKey)//암호화 진행
+                .signWith(secretKey)//암호화 진3333333행
                 .compact();//토큰 반환
+    }
+
+    //Access Token의 남은 유효 시간(TTL)을 계산
+
+    public long getRemainingTime(String token) {
+        // 1. 만료 시각 추출
+        Date expiration = Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getExpiration();
+
+        // 2. 현재 시간 기준 남은 밀리초 계산
+        long now = System.currentTimeMillis();
+        long remaining = expiration.getTime() - now;
+
+        // 음수 방지
+        return Math.max(remaining, 0);
     }
 }
