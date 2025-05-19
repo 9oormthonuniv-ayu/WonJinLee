@@ -3,6 +3,7 @@ package com.example.demo.config;
 import com.example.demo.jwt.JWTFilter;
 import com.example.demo.jwt.JWTUtil;
 import com.example.demo.jwt.LoginFilter;
+import com.example.demo.redis.service.RedisService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,10 +29,12 @@ public class SecurityConfig {
 
     //LoginFilter가 인자로 JWTUtile를 받기 때문에 선언
     private JWTUtil jwtUtil;
+    private RedisService redisService;
 
-    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil) {
+    public SecurityConfig(AuthenticationConfiguration authenticationConfiguration, JWTUtil jwtUtil, RedisService redisService) {
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtUtil=jwtUtil;
+        this.redisService=redisService;
     }
     //AuthenticationManager Bean 등록
     @Bean
@@ -96,6 +99,9 @@ public class SecurityConfig {
                         .requestMatchers("/login","/","/join").permitAll()// 모든 권한 허용
                         .requestMatchers("/admin").hasAnyRole("ADMIN")//ADMIN이라는 권한을 갖는 사용자만 접근 가능
                         .requestMatchers("/redis/**").permitAll()
+                        .requestMatchers("/api/logout").permitAll()
+                        .requestMatchers("/api/token/refresh").permitAll()
+
                         .anyRequest().authenticated());//authenticated를 통해 나머지는 로그인한 회원들을 기준으로 사용 가능
         //jwt인증하고 토큰을 발급하는 필터 등록
         http
@@ -106,7 +112,7 @@ public class SecurityConfig {
         //하지만 지금은 disable 했기 때문에 addFilterAt를 통해 새롭게 만든 커스텀 필터를 대채한다면 UsernamePasswordAuthenticationFilter에게 가던
         //사용자 요청이 새롭게 만든 커스텀 필터에게 전달된다.
         http
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, redisService), UsernamePasswordAuthenticationFilter.class);
 
         //세션 설정
         http

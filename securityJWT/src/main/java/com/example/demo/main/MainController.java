@@ -14,7 +14,7 @@ import java.util.Iterator;
 @ResponseBody
 public class MainController {
     @GetMapping("/")
-    public String mainP (){
+    public String mainPage (){
         //세션의 username를 name에 저장 이러한 값을 프론트에 전달해서 id 출력
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -28,4 +28,14 @@ public class MainController {
 
         return "Main Contorller"+name+role;
     }
+    @GetMapping("/mypage")
+    public String myPage() {
+        return "마이페이지 - 로그인 필요";
+    }
+
+    @GetMapping("/admin-page")
+    public String adminPage() {
+        return "관리자 전용 페이지입니다.";
+    }
+
 }

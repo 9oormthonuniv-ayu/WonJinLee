@@ -1,6 +1,8 @@
 package com.example.demo.jwt;
 
+import com.example.demo.redis.service.RedisService;
 import com.example.demo.user.dto.CustomUserDetails;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,19 +13,23 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 //authenticationManager이 친구가 사용자가 입력한 값을 필터로부터 전달 받아서 비교 후 다음 동작을 한다.
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     //AuthenticationManager는 사용자의 아이디/비밀번호를 검증해주는 핵심 컴포넌트이다.
     private final AuthenticationManager authenticationManager;
-
+    private final RedisService redisService;
     private final JWTUtil jwtUtil;//토큰을 생성하고 검증하는 부분을 사용하기
 
-    public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
+    public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil, RedisService redisService) {
         this.authenticationManager = authenticationManager;
         this.jwtUtil=jwtUtil;
+        this.redisService = redisService;
     }
 
     @Override
@@ -59,12 +65,31 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         String role = auth.getAuthority();
 
-        //추출한 이름과 role를 통해 토큰 만들기
-        String token= jwtUtil.createJwt(username, role, 60*60*10L);
+        // ✅ Access / Refresh Token 분리 발급
+        String accessToken = jwtUtil.createAccessToken(username, role);
+        String refreshToken = jwtUtil.createRefreshToken(username);
+
+        // ✅ Redis에 Refresh Token 저장 (7일 TTL)
+        redisService.saveRefreshToken(username, refreshToken);
 
         //완성한 토큰을 해더에 담아서 전달 담을때의 Authorization라는 키값으로 담음
+
         //인증 방식(Scheme)은 Bearer이다. 띄어쓰기 필수"Bearer " + token
-        response.addHeader("Authorization", "Bearer " + token);
+        response.setHeader("Authorization", "Bearer " + accessToken);
+        response.setContentType("application/json;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
+        try {
+            Map<String, String> tokens = new HashMap<>();
+            tokens.put("accessToken",  "Bearer " +accessToken);
+            tokens.put("refreshToken",refreshToken);
+
+            String responseBody = new ObjectMapper().writeValueAsString(tokens);
+            response.getWriter().write(responseBody);
+
+        } catch (IOException e) {
+            e.printStackTrace(); // 예외 처리
+        }
     }
     //로그인 실패시 실행하는 메소드
     /*

@@ -11,9 +11,9 @@ public class RedisTestController {
 
     private final RedisService redisService;
 
-    @GetMapping("/redis/test")
-    public String testRedis() {
-        redisService.setValue("hello", "redis 연결 완료!");
-        return redisService.getValue("hello").toString();
-    }
+//    @GetMapping("/redis/test")
+//    public String testRedis() {
+//        redisService.setValue("hello", "redis 연결 완료!");
+//        return redisService.getValue("hello").toString();
+//    }
 }

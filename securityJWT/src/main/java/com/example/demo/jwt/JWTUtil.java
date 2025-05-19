@@ -24,11 +24,30 @@ public class JWTUtil {
     //secret을 객체 타입으로 암호화 하여 저장하기 위한 클래스
     private SecretKey secretKey;
 
-     //Value을 통해 application.properties에 설정한 특정 값을 읽어 온다.(String secret은 값을 받을 변수)
+    // Access Token: 15분 (1000ms * 60s * 15m)
+    private static final long ACCESS_EXP = 1000L * 60 * 15;
+
+    // Refresh Token: 7일 (1000ms * 60s * 60m * 24h * 7d)
+    private static final long REFRESH_EXP = 1000L * 60 * 60 * 24 * 7;
+
+
+
+    //Value을 통해 application.properties에 설정한 특정 값을 읽어 온다.(String secret은 값을 받을 변수)
     public JWTUtil(@Value("${spring.jwt.secret}")String secret){
         //secret을 객체로 만들면서 암호화 하는 과정이다.
         this.secretKey = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), Jwts.SIG.HS256.key().build().getAlgorithm());
     }
+
+    // Access Token 생성 전용
+    public String createAccessToken(String username, String role) {
+        return createJwt(username, role, ACCESS_EXP);
+    }
+
+    // Refresh Token 생성 전용 (role은 넣지 않음)
+    public String createRefreshToken(String username) {
+        return createJwt(username, null, REFRESH_EXP);
+    }
+
     //Username 검증
     /*
      *Jwts.parser(): 암호화가 된것을 검증하겠다.
@@ -37,12 +56,21 @@ public class JWTUtil {
      */
     public String getUsername(String token) {
 
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("username", String.class);
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get("username", String.class);
     }
     //Role검증
     public String getRole(String token) {
 
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class);
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload().get("role", String.class);
     }
     /*
      *isExpired 유효기간이 지났는지 검증
@@ -50,7 +78,13 @@ public class JWTUtil {
     * */
     public Boolean isExpired(String token) {
 
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
+        return Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getExpiration()
+                .before(new Date());
     }
 
     //로그인 성공했을 때에 토큰 생성 후 응답
